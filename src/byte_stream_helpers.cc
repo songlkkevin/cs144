@@ -30,6 +30,7 @@ Reader& ByteStream::reader()
                  "Please add member variables to the ByteStream base, not the ByteStream Reader." );
 
   return static_cast<Reader&>( *this ); // NOLINT(*-downcast)
+  //?！ 直接转换吗？，为什么不直接声明呢？
 }
 
 const Reader& ByteStream::reader() const
