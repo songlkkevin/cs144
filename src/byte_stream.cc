@@ -16,8 +16,7 @@ void Writer::push( string data ) //?添加数据的过程中满了怎么办？
   // Your code here.
   size_t sz = min( available_capacity(), data.size() );
   num_push += sz;
-  buf_.append( data.substr( 0, sz ) );
-  return;
+  buf_.append( data.substr( 0, sz ) );  
 }
 
 void Writer::close()
