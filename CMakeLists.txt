@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24.2)
-
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 project(minnow CXX)
 
 if(${CMAKE_GENERATOR} STREQUAL "Unix Makefiles")
