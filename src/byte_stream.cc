@@ -1,6 +1,6 @@
 #include "byte_stream.hh"
 #include <cstddef>
-
+#include <assert.h>
 using namespace std;
 
 ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
@@ -11,7 +11,8 @@ bool Writer::is_closed() const
   return close_;
 }
 
-void Writer::push( string data ) //?添加数据的过程中满了怎么办？
+//! 添加数据的过程中若满，则丢弃后面的数据
+void Writer::push( string data ) 
 {
   // Your code here.
   size_t sz = min( available_capacity(), data.size() );

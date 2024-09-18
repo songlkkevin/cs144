@@ -7,14 +7,14 @@
 
 class Reader;
 class Writer;
-
+//* 流是一个存在容量限制，可读可写的字节顺序容器
 class ByteStream
 {
 public:
   explicit ByteStream( uint64_t capacity );
 
   // Helper functions (provided) to access the ByteStream's Reader and Writer interfaces
-  Reader& reader();
+  Reader& reader(); 
   const Reader& reader() const;
   Writer& writer();
   const Writer& writer() const;
@@ -22,13 +22,16 @@ public:
   void set_error() { error_ = true; };       // Signal that the stream suffered an error.
   bool has_error() const { return error_; }; // Has the stream had an error?
 
+  //!
+  std::string buf_;
+
 protected:
   // Please add any additional state to the ByteStream here, and not to the Writer and Reader interfaces.
   uint64_t capacity_;
   bool error_ {};
-  std::string buf_;
+  
   //* wirter
-  bool close_;
+  bool close_=false;
   size_t num_push;
   //* reader
   size_t num_pop;

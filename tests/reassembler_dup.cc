@@ -3,13 +3,14 @@
 
 #include <exception>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
 int main()
 {
   try {
-    auto rd = get_random_engine();
+    
 
     {
       ReassemblerTestHarness test { "dup 1", 65000 };
@@ -23,6 +24,7 @@ int main()
       test.execute( BytesPushed( 4 ) );
       test.execute( ReadAll( "" ) );
       test.execute( IsFinished { false } );
+      
     }
 
     {
@@ -50,6 +52,7 @@ int main()
     }
 
     {
+      auto rd = get_random_engine();
       ReassemblerTestHarness test { "dup 3", 65000 };
 
       test.execute( Insert { "abcdefgh", 0 } );
@@ -66,7 +69,7 @@ int main()
         const size_t end_i = uniform_int_distribution<size_t> { start_i, 8 }( rd );
         auto end = data.begin();
         std::advance( end, end_i );
-
+                
         test.execute( Insert { string { start, end }, start_i } );
         test.execute( BytesPushed( 8 ) );
         test.execute( ReadAll( "" ) );
