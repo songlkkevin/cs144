@@ -31,7 +31,7 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
   }
 
   for ( ; buf_i < buf_unorderedByte.size() && data_i < data.size(); buf_i++, data_i++ ) {
-    if ( buf_flags[buf_i] == EMPTY ) {//! 重复过的包
+    if ( buf_flags[buf_i] == EMPTY ) { //! 重复过的包
       buf_unorderedByte[buf_i] = data[data_i];
       bytes_pendingNum++;
       buf_flags[buf_i] = UNEMPTY;
@@ -47,7 +47,7 @@ void Reassembler::insert( uint64_t first_index, string data, bool is_last_substr
     size_t end = min( buf_flags.find( EMPTY ), buf_flags.size() );
     op_writer.push( buf_unorderedByte.substr( 0, end ) );
     Bstream_nextByte += end;
-    
+
     bytes_pendingNum -= end;
 
     buf_unorderedByte.erase( 0, end );

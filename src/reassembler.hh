@@ -44,21 +44,14 @@ public:
 
   // Access output stream writer, but const-only (can't write from outside)
   const Writer& writer() const { return output_.writer(); }
+  
 
 private:
-  ByteStream output_; // the Reassembler writes to this ByteStream
-                      //
-    std::string buf_unorderedByte; // 存储乱序字节块;通信流中可写入部分的副本
-    uint64_t bytes_pendingNum; // reac临时缓存的字节数
-    uint64_t Bstream_nextByte; // 通信流的下一个字节数
-    uint64_t close_=false;
-    std::string buf_flags;
-
-//   bool is_last_substring_ { false };
-//   uint64_t max_index_ { 0 };
-//   uint64_t bytes_pending_ { 0 };
-//   uint64_t first_unassembled_index_ { 0 };
-
-//   // map version
-//   std::map<uint64_t, std::string> buffer_ {};
+  ByteStream output_;            // the Reassembler writes to this ByteStream
+                                 //
+  std::string buf_unorderedByte; // 存储乱序字节块;通信流中可写入部分的副本
+  uint64_t bytes_pendingNum;     // reac临时缓存的字节数
+  uint64_t Bstream_nextByte;     // 通信流的下一个字节数
+  uint64_t close_ = false;
+  std::string buf_flags;
 };

@@ -35,6 +35,7 @@ int main()
       test.execute( SegmentArrives {}.with_syn().with_seqno( isn + 0 ) );
       test.execute( IsClosed { false } );
       test.execute( SegmentArrives {}.with_fin().with_seqno( isn + 1 ).with_data( "a" ) );
+      test.execute( BytesPending { 0 } );
       test.execute( IsClosed { true } );
       test.execute( ExpectAckno { Wrap32 { isn + 3 } } );
       test.execute( BytesPending { 0 } );
