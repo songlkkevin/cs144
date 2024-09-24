@@ -85,4 +85,3 @@ TCPReceiverMessage TCPReceiver::send() const
 
   return newmes;
 }
-//? 旧包怎么处理？
