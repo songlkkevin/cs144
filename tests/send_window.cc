@@ -89,7 +89,7 @@ int main()
       const Wrap32 isn( rd() );
       cfg.isn = isn;
 
-      TCPSenderTestHarness test { "FIN flag occupies space in window", cfg };
+      TCPSenderTestHarness test { "FIN flag occupies space in window", cfg };//?!
       test.execute( Push {} );
       test.execute( ExpectMessage {}.with_no_flags().with_syn( true ).with_payload_size( 0 ).with_seqno( isn ) );
       test.execute( AckReceived { Wrap32 { isn + 1 } }.with_win( 7 ) );
@@ -117,7 +117,7 @@ int main()
       test.execute( Close {} );
       test.execute( ExpectMessage {}.with_no_flags().with_data( "1234567" ) );
       test.execute( ExpectNoSegment {} ); // window is full
-      test.execute( AckReceived { Wrap32 { isn + 1 } }.with_win( 8 ) );
+      test.execute( AckReceived { Wrap32 { isn + 1 } }.with_win( 8 ) );//??
       test.execute( ExpectMessage {}.with_fin( true ).with_data( "" ) );
       test.execute( ExpectNoSegment {} );
     }

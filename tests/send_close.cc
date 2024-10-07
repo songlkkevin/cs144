@@ -58,7 +58,7 @@ int main()
       const Wrap32 isn( rd() );
       cfg.isn = isn;
 
-      TCPSenderTestHarness test { "SYN + FIN", cfg };
+      TCPSenderTestHarness test { "SYN + FIN", cfg };//??
       test.execute( Receive { { {}, 1024 } }.without_push() );
       test.execute( Close {} );
       test.execute( ExpectMessage {}.with_syn( true ).with_payload_size( 0 ).with_seqno( isn ).with_fin( true ) );
