@@ -1,19 +1,19 @@
 Checkpoint 0 Writeup
 ====================
 
-My name: [your name here]
+My name: [黄嘉诚]
 
-My SUNet ID: [your sunetid here]
+My SUNet ID: [22302010051]
 
-I collaborated with: [list sunetids here]
+I collaborated with: [我自己]
 
-I would like to credit/thank these classmates for their help: [list sunetids here]
+I would like to credit/thank these classmates for their help: [no]
 
 This lab took me about [n] hours to do. I [did/did not] attend the lab session.
 
-My secret code from section 2.1 was: [code here]
+My secret code from section 2.1 was: [865755]
 
-I was surprised by or edified to learn that: [describe]
+I was surprised by or edified to learn that: [这个手动发送请求很酷]
 
 Describe ByteStream implementation. [Describe data structures and
 approach taken. Describe alternative designs considered or tested.
