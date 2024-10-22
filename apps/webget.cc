@@ -9,8 +9,30 @@ using namespace std;
 
 void get_URL( const string& host, const string& path )
 {
-  cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
-  cerr << "Warning: get_URL() has not been implemented yet.\n";
+  // Create a TCP socket.
+  TCPSocket tcps = TCPSocket();
+  // Get the address tcps will connect to.
+  Address addr = Address(host, "http");
+  // Connect tcps to addr.
+  tcps.connect(addr);
+  // Send connection request.
+  string req = "";
+  req += "GET "   + path + " HTTP/1.1\r\n";
+  req += "Host: " + host + " \r\n";
+  req += "Connection: close\r\n";
+  // New line to tell server don't need to wait anymore.
+  req += "\r\n";
+  // Use the write() function in class FileDescriptor to write request.
+  tcps.write(req);
+  // Keep listening messages from server until socket reaches EOF.
+  string buf;
+  while (!tcps.eof())
+  {
+    tcps.read(buf);
+    cout << buf;
+  }
+  // Close the socket.
+  tcps.close();
 }
 
 int main( int argc, char* argv[] )
