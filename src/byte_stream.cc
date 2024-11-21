@@ -1,95 +1,79 @@
 #include "byte_stream.hh"
-#include <cstdint>
-#include <chrono>
-#include <string_view>
+
+#include <utility>
 
 using namespace std;
 
-ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ), stream_("") {}
+ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
 bool Writer::is_closed() const
 {
-  // Your code here.
-  return close_;
+  return closed_;
 }
 
 void Writer::push( string data )
 {
-  // Your code here.
-  // print time of the functions
-    if (close_)
-        return;
-    const uint64_t size = bytes_pushed_ - bytes_poped_;
-    const uint64_t capacity = capacity_ - size;
-    const uint64_t data_size = data.size();
-    const uint64_t bytes_pushed = min (data_size, capacity);
-    if (data_size == bytes_pushed)
-        stream_.append(data);
-    else
-        stream_.append(data.substr(0, bytes_pushed));
-    bytes_pushed_ += bytes_pushed;
+  if ( Writer::is_closed() or Writer::available_capacity() == 0 or data.empty() ) {
     return;
+  }
+
+  if ( data.size() > Writer::available_capacity() ) {
+    data.resize( Writer::available_capacity() );
+  }
+  total_pushed_ += data.size();
+  total_buffered_ += data.size();
+
+  stream_.emplace( move( data ) );
 }
 
 void Writer::close()
 {
-  // Your code here.
-    close_ = true;
+  closed_ = true;
 }
 
 uint64_t Writer::available_capacity() const
 {
-  // Your code here.
-    uint64_t size = bytes_pushed_ - bytes_poped_;
-    return capacity_ - size;
+  return capacity_ - total_buffered_;
 }
 
 uint64_t Writer::bytes_pushed() const
 {
-  // Your code here.
-    return bytes_pushed_;
+  return total_pushed_;
 }
 
 bool Reader::is_finished() const
 {
-  // Your code here.
-    return close_ && (bytes_pushed_ == bytes_poped_);
+  return closed_ and total_buffered_ == 0;
 }
 
 uint64_t Reader::bytes_popped() const
 {
-  // Your code here.
-    return bytes_poped_;
+  return total_popped_;
 }
 
 string_view Reader::peek() const
 {
-  // Your code here.
-    const uint64_t size = bytes_pushed_ - bytes_poped_;
-    if (size == 0)
-        return string_view();
-    if (erased_ < stream_.size()) {
-        return std::string_view(stream_.data() + erased_, 1);
-    } else {
-        return std::string_view();
-    }
+  return stream_.empty() ? string_view {} // std::string_view dependents on the initializer through its lifetime.
+                         : string_view { stream_.front() }.substr( removed_prefix_ );
 }
 
 void Reader::pop( uint64_t len )
 {
-  // Your code here.
-    uint64_t size = bytes_pushed_ - bytes_poped_;
-    len = min (len, size);
-    erased_ += len;
-    bytes_poped_ += len;
-    if (erased_ >= capacity_) {
-        stream_.erase(0, erased_);
-        erased_ = 0;
+  total_buffered_ -= len;
+  total_popped_ += len;
+  while ( len != 0U ) {
+    const uint64_t& size { stream_.front().size() - removed_prefix_ };
+    if ( len < size ) {
+      removed_prefix_ += len;
+      break; // with len = 0;
     }
+    stream_.pop();
+    removed_prefix_ = 0;
+    len -= size;
+  }
 }
 
 uint64_t Reader::bytes_buffered() const
 {
-  // Your code here.
-    return bytes_pushed_ - bytes_poped_;
+  return total_buffered_;
 }
