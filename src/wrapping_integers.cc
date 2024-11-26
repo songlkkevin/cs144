@@ -7,19 +7,11 @@ using namespace std;
 
 Wrap32 Wrap32::wrap( uint64_t n, Wrap32 zero_point )
 {
-  // (void)n;
-  // (void)zero_point;
-  // return Wrap32 { 0 };
-  // Your code here.
   return Wrap32 { zero_point + (uint32_t)( n & WRAP32_MASK ) };
 }
 
 uint64_t Wrap32::unwrap( Wrap32 zero_point, uint64_t checkpoint ) const
 {
-  // (void)zero_point;
-  // (void)checkpoint;
-  // return 0;
-  // Your code here.
   const uint64_t abs_seqo
     = ( (int64_t)raw_value_ - (int64_t)zero_point.raw_value_ + WRAP32_MODULUS ) % WRAP32_MODULUS;
   const uint64_t nearest = ( (int64_t)checkpoint - (int64_t)abs_seqo ) / WRAP32_MODULUS * WRAP32_MODULUS + abs_seqo;

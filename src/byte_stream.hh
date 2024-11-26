@@ -8,6 +8,8 @@
 class Reader;
 class Writer;
 
+void read( Reader& reader, uint64_t len, std::string& out );
+
 class ByteStream
 {
 public:
