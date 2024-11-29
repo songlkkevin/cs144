@@ -1,10 +1,29 @@
 #pragma once
 
+#include <map>
 #include <queue>
+#include <set>
+#include <unordered_map>
 
 #include "address.hh"
 #include "ethernet_frame.hh"
 #include "ipv4_datagram.hh"
+
+using AddressNumeric = uint32_t;
+struct ExpireEntry
+{
+  static constexpr bool QUERY = 0;
+  static constexpr bool CACHE = 1;
+
+  bool type;
+  AddressNumeric ip;
+};
+
+struct ARPCacheEntry
+{
+  EthernetAddress ethernet_address;
+  uint64_t expire_time;
+};
 
 // A "network interface" that connects IP (the internet layer, or network layer)
 // with Ethernet (the network access layer, or link layer).
@@ -66,6 +85,8 @@ public:
   std::queue<InternetDatagram>& datagrams_received() { return datagrams_received_; }
 
 private:
+  static constexpr uint64_t ARP_REQUEST_TIMEOUT = 5000;
+  static constexpr uint64_t ARP_CACHE_TIMEOUT = 30000;
   // Human-readable name of the interface
   std::string name_;
 
@@ -81,4 +102,15 @@ private:
 
   // Datagrams that have been received
   std::queue<InternetDatagram> datagrams_received_ {};
+
+  uint64_t ms_since_start_ = 0;
+
+  // ARP cache
+  std::unordered_map<AddressNumeric, ARPCacheEntry> arp_cache_ {};
+  // waiting datagrams
+  std::unordered_map<AddressNumeric, std::queue<InternetDatagram>> waiting_datagrams_ {};
+  // expire time
+  std::map<uint64_t, std::queue<ExpireEntry>> expire_time_ {};
+  // ARP request
+  std::set<uint32_t> arp_request_ {};
 };
