@@ -21,10 +21,52 @@ void Router::add_route( const uint32_t route_prefix,
        << " on interface " << interface_num << "\n";
 
   // Your code here.
+  _routes.push_back( { route_prefix, prefix_length, next_hop, interface_num } );
 }
 
 // Go through all the interfaces, and route every incoming datagram to its proper outgoing interface.
 void Router::route()
 {
   // Your code here.
+  for ( auto& interface : _interfaces ) {
+    auto&& datagrams_received { interface->datagrams_received() };
+    while ( not datagrams_received.empty() ) {
+      int8_t interface_num = -1;
+      int8_t longest_prefix_length = -1;
+      optional<Address> next_hop;
+      auto datagram { std::move( datagrams_received.front() ) };
+      auto destination = datagram.header.dst;
+      datagrams_received.pop();
+
+      if ( datagram.header.ttl <= 1 ) {
+        cerr << "DEBUG: TTL expired\n";
+        continue;
+      }
+      datagram.header.ttl--;
+      datagram.header.compute_checksum();
+
+      for ( auto& curr_route : _routes ) {
+        auto prefix = curr_route.route_prefix;
+        int8_t curr_length = -1;
+        if ( curr_route.prefix_length < longest_prefix_length ) {
+          continue;
+        }
+        for ( int i = 0; i < curr_route.prefix_length; i++ ) {
+          if ( ( prefix & ( 1 << ( 31 - i ) ) ) == ( destination & ( 1 << ( 31 - i ) ) ) ) {
+            curr_length = i;
+          } else {
+            break;
+          }
+        }
+        curr_length++;
+        if ( curr_length >= longest_prefix_length && curr_length == curr_route.prefix_length ) {
+          longest_prefix_length = curr_length;
+          next_hop = curr_route.next_hop;
+          interface_num = curr_route.interface_num;
+        }
+      }
+      _interfaces[interface_num]->send_datagram(
+        std::move( datagram ), next_hop.value_or( Address::from_ipv4_numeric( datagram.header.dst ) ) );
+    }
+  }
 }
